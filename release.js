@@ -4,16 +4,17 @@ import fs from 'fs';
 
 dotenv.config();
 
-// 'GeneralLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200-6207927063058028102.json'
-// 'DialoguesLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200--6359132067312534950.json'
-
+let files = {
+    dialogues: 'DialoguesLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200--6359132067312534950.json',
+    general: 'GeneralLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200-6207927063058028102.json'
+};
 // * cfg
 const config = {
-    dry: true,
+    dry: false,
     folder_in: './resources/Translated/',
     folder_out: './resources/Release/',
     // target: 'DialoguesLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200--6359132067312534950.json',
-    target: 'GeneralLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200-6207927063058028102.json',
+    target: files.general,
     // ---
     batch_size: 10,
 };
@@ -37,13 +38,14 @@ async function main() {
 
     for (let i = 0, lines = 0; i < items.length; i++) {
         let item = items[i];
+        let id = item.Term;
         let text = item.Languages.Array[0];
 
         console.log();
         progress();
 
         if (!text.includes("[***]")) {
-            console.log(pc.gray(`[-] Skipping: ${item.Term}`));
+            console.log(pc.gray(`[-] Skipping: ${id}`));
             continue;
         }
 
@@ -63,11 +65,21 @@ async function main() {
     }
 
     write(config.folder_out + config.target, input);
-    console.log(pc.cyan("[*] Translation saved to file"));
+    console.log(pc.cyan("[*] Translation saved to file: " + config.folder_out + config.target));
 
     function process(text) {
+
         // let [after, before] = text.split(' [***] ');
 
+        // if (!/[а-яА-ЯЁё]/.test(before)) {
+        //     item.Languages.Array = [ before + ' [***] ' + before ];
+        //     console.log(pc.yellow(before), pc.gray(after));
+        //     continue;
+        // } else {
+        //     continue;
+        // }
+
+        // let [after, before] = text.split(' [***] ');
         let translation = text.substr(0, text.indexOf(' [***] '));
 
         translation = translation.replaceAll(/і/g, 'i');

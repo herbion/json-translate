@@ -5,15 +5,15 @@ import fs from 'fs';
 
 dotenv.config();
 
-// 'GeneralLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200-6207927063058028102.json'
-// 'DialoguesLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200--6359132067312534950.json'
-
+let files = {
+    dialogues: 'DialoguesLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200--6359132067312534950.json',
+    general: 'GeneralLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200-6207927063058028102.json'
+};
 // * cfg
 const config = {
     folder_in: '/Users/admin/IdeaProjects/json-traslate/Translated/',
     folder_out: '/Users/admin/IdeaProjects/json-traslate/Translated/',
-    // TARGET: 'DialoguesLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200--6359132067312534950.json',
-    target: 'GeneralLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200-6207927063058028102.json',
+    target: files.general,
     // ---
     max_char_limit: 500_000,
     max_usage_limit: 75.00,
