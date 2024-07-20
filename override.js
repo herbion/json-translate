@@ -4,16 +4,11 @@ import fs from 'fs';
 
 dotenv.config();
 
-// 'GeneralLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200-6207927063058028102.json'
-// 'DialoguesLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200--6359132067312534950.json'
-
 // * cfg
 const config = {
     dry: true,
     folder_in: './resources/Override/',
     folder_out: './resources/Translated/',
-    // target: 'DialoguesLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200--6359132067312534950.json',
-    // target: 'GeneralLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200-6207927063058028102.json',
     target: 'GeneralLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200-6207927063058028102.json.tsv',
     // ---
     batch_size: 10,
