@@ -1,40 +1,41 @@
 import dotenv from 'dotenv';
 import pc from "picocolors";
 import fs from 'fs';
+import Dictonary from './utils/dict.js';
+import CSV from './utils/csv.js';
+import progresify from './utils/progress.js';
 
 dotenv.config();
 
-let files = {
-    dialogues: 'DialoguesLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200--6359132067312534950.json',
-    general: 'GeneralLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200-6207927063058028102.json'
-};
 // * cfg
 const config = {
     dry: false,
+    csv: true,
+    dictionary: true,
     folder_in: './resources/Translated/',
     folder_out: './resources/Release/',
-    // target: 'DialoguesLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200--6359132067312534950.json',
-    target: files.general,
-    // ---
-    batch_size: 10,
 };
 // * utils
-const read = (file) => JSON.parse(fs.readFileSync(file, 'utf8'));
-const write = (file, data) => config.dry || fs.writeFileSync(file, JSON.stringify(data, null, 2));
+const read = (file) => {
+    console.log(pc.cyan("[*] Reading file: " + file));
+    return JSON.parse(fs.readFileSync(file, 'utf8'))
+};
+const write = (file, data) => {
+    if (config.dry) {
+        console.log(pc.gray('[-] Dry run, do nothing'));
+        return;
+    } 
+    fs.writeFileSync(file, JSON.stringify(data, null, 2)); 
+    console.log(pc.cyan("[*] Saved to file: " + file));
+}
 
-async function main() {
-    let input = read(config.folder_in + config.target);
+async function release(target) {
+    let input = read(config.folder_in + target);
     let items = input.mSource.mTerms.Array;
 
-    let progress = (() => {
-        let i = 1;
-        let total = items.length;
-        return () => {
-            let completion = (100 * i / total).toFixed(2);
-            console.log(`〰️ ${pc.yellow(completion + '%')} | lines: ${pc.gray(i)} / ${pc.gray(total)}`);
-            i++;
-        }
-    })();
+    let progress = progresify(items.length);
+    let dictionary = new Dictonary(config);
+    let csv = new CSV();
 
     for (let i = 0, lines = 0; i < items.length; i++) {
         let item = items[i];
@@ -44,43 +45,35 @@ async function main() {
         console.log();
         progress();
 
-        if (!text.includes("[***]")) {
+        if (!isValid(text)) {
             console.log(pc.gray(`[-] Skipping: ${id}`));
             continue;
         }
 
-        let translation = process(text);
+        config.csv && csv.add(id, text);
+
+        let translation = process(text, dictionary);
         // update translation
         item.Languages.Array = [ translation ];
-
+        
         console.log(">>", pc.red(text));
         console.log("<<", pc.green(translation));
-
-        // should save?
-        if (lines++ == config.batch_size) {
-            write(config.folder_out + config.target, input);
-            console.log(pc.cyan("[*] Translation saved to file"));
-            lines = 0;
-        }
     }
 
-    write(config.folder_out + config.target, input);
-    console.log(pc.cyan("[*] Translation saved to file: " + config.folder_out + config.target));
+    write(config.folder_out + target, input);
+    dictionary.save();
+    config.csv && csv.save('./resources/Sheets/' + target);
 
-    function process(text) {
-
+    function isValid(text) {
         // let [after, before] = text.split(' [***] ');
+        return text.includes("[***]");
+    }
 
-        // if (!/[а-яА-ЯЁё]/.test(before)) {
-        //     item.Languages.Array = [ before + ' [***] ' + before ];
-        //     console.log(pc.yellow(before), pc.gray(after));
-        //     continue;
-        // } else {
-        //     continue;
-        // }
-
+    function process(text, dictionary) {
         // let [after, before] = text.split(' [***] ');
         let translation = text.substr(0, text.indexOf(' [***] '));
+        
+        dictionary.record(translation);
 
         translation = translation.replaceAll(/і/g, 'i');
         translation = translation.replaceAll(/І/g, 'I');
@@ -88,9 +81,28 @@ async function main() {
         translation = translation.replaceAll(/Є/g, 'Э');
         translation = translation.replaceAll(/ї/g, 'î');
         translation = translation.replaceAll(/Ї/g, 'Î');
-
+        
         return translation;
     }
 }
 
+async function main() {
+    let files = {
+        dialogues: 'DialoguesLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200--6359132067312534950.json',
+        general: 'GeneralLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200-6207927063058028102.json'
+    };
+    await release(files.dialogues);
+    await release(files.general);
+}
+
 await main();
+
+// ---- 
+
+// function count(str, char) {
+//     let count = 0;
+//     for (let i = 0; i < str.length; i++) {
+//       if (str[i] === char) count++;
+//     }
+//     return count;
+// }

@@ -7,11 +7,9 @@ async function main() {
     const keys = [
         'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX:fx',
     ];
-
-    const uniqueKeys = [...new Set(keys)];
-
+    
     let active = []
-    for (let key of uniqueKeys) {
+    for (let key of [...new Set(keys)]) {
         try {
             const translator = new deepl.Translator(key, { maxRetries: 3, minTimeout: 10000 });
             const usage = await translator.getUsage();
@@ -28,9 +26,7 @@ async function main() {
     active.sort((a, b) => a.usage.character.count - b.usage.character.count);
 
     console.log("Active accounts:");
-    active.forEach(account => {
-        console.log(`API_KEY=${account.key} # ${account.usage.character.count} characters`);
-    });
+    active.forEach(account => console.log(`API_KEY=${account.key} # ${account.usage.character.count} characters`));
     // let response = await translate2("Hello, world!");
     // console.log(response);
 }

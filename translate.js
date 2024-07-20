@@ -2,6 +2,7 @@ import * as deepl from 'deepl-node';
 import dotenv from 'dotenv';
 import pc from "picocolors";
 import fs from 'fs';
+import progresify from './utils/progress.js';
 
 dotenv.config();
 
@@ -11,8 +12,8 @@ let files = {
 };
 // * cfg
 const config = {
-    folder_in: '/Users/admin/IdeaProjects/json-traslate/Translated/',
-    folder_out: '/Users/admin/IdeaProjects/json-traslate/Translated/',
+    folder_in: './resources/Translated/',
+    folder_out: './resources/Translated/',
     target: files.general,
     // ---
     max_char_limit: 500_000,
@@ -35,15 +36,13 @@ async function main() {
     const translator = new Translator(config);
     await translator.configure();
 
+    let progress = progresify(items.length);
+
     for (let i = 0, lines = 0; i < items.length; i++) {
         if (translator.usage() > config.max_usage_limit) {
             console.log(translator.status());
             console.log(pc.red("⚠️ Usage limit exceeded!"));
             break;
-        }
-        let progress = () => {
-            let completion = (((i + 1) / items.length) * 100).toFixed(2);
-            console.log(`〰️ ${pc.yellow(completion + '%')} | lines: ${pc.gray(i + 1)} / ${pc.gray(items.length)}`);
         }
 
         let item = items[i];
