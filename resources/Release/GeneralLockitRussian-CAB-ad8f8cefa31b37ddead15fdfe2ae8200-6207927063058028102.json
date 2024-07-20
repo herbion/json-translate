@@ -6,7 +6,7 @@
   "m_Enabled": 1,
   "m_Script": {
     "m_FileID": 0,
-    "m_PathID": -7816424887579163000
+    "m_PathID": -7816424887579163056
   },
   "m_Name": "GeneralLockitRussian",
   "mSource": {
@@ -140509,7 +140509,7 @@
     "GoogleUpdateFrequency": 1,
     "GoogleInEditorCheckFrequency": 1,
     "GoogleUpdateSynchronization": 2,
-    "GoogleUpdateDelay": 0,
+    "GoogleUpdateDelay": 0.0,
     "Assets": {
       "Array": []
     }
