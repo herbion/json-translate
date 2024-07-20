@@ -4,15 +4,18 @@ import fs from 'fs';
 import Dictonary from './utils/dict.js';
 import CSV from './utils/csv.js';
 import progresify from './utils/progress.js';
+import minimist from 'minimist'
 
 dotenv.config();
 
+var argv = minimist(process.argv.slice(2));
+
 // * cfg
 const config = {
-    dry: false,
-    csv: true,
-    dictionary: true,
-    folder_in: './resources/Translated/',
+    dry: argv.dry || false,
+    csv: argv.csv || false,
+    dictionary: argv.dictionary || false,
+    folder_in: './resources/Staging/',
     folder_out: './resources/Release/',
 };
 // * utils
@@ -87,12 +90,9 @@ async function release(target) {
 }
 
 async function main() {
-    let files = {
-        dialogues: 'DialoguesLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200--6359132067312534950.json',
-        general: 'GeneralLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200-6207927063058028102.json'
-    };
-    await release(files.dialogues);
-    await release(files.general);
+    for (let resource of argv['_']) {
+        await release(resource);
+    }
 }
 
 await main();

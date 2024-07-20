@@ -27,7 +27,7 @@ class Dictonary {
             .map(token => token.segment);
     }
 
-    save(filename = "./words2.txt") {
+    save(filename = "./words.txt") {
         if (!this.config.dictionary) return;
     
         console.log("Updated dictionary")

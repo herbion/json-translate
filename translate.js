@@ -6,15 +6,13 @@ import progresify from './utils/progress.js';
 
 dotenv.config();
 
-let files = {
-    dialogues: 'DialoguesLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200--6359132067312534950.json',
-    general: 'GeneralLockitRussian-CAB-ad8f8cefa31b37ddead15fdfe2ae8200-6207927063058028102.json'
-};
+var argv = minimist(process.argv.slice(2));
+
 // * cfg
 const config = {
-    folder_in: './resources/Translated/',
-    folder_out: './resources/Translated/',
-    target: files.general,
+    folder_in: './resources/Staging/',
+    folder_out: './resources/Staging/',
+    target: argv['_'][0],
     // ---
     max_char_limit: 500_000,
     max_usage_limit: 75.00,
