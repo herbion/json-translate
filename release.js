@@ -3,6 +3,7 @@ import pc from "picocolors";
 import fs from 'fs';
 import Dictonary from './utils/dict.js';
 import CSV from './utils/csv.js';
+import Resouces from './utils/resources.js';
 import progresify from './utils/progress.js';
 import minimist from 'minimist'
 
@@ -19,28 +20,17 @@ const config = {
     folder_out: './resources/Release/',
 };
 // * utils
-const read = (file) => {
-    console.log(pc.cyan("[*] Reading file: " + file));
-    return JSON.parse(fs.readFileSync(file, 'utf8'))
-};
-const write = (file, data) => {
-    if (config.dry) {
-        console.log(pc.gray('[-] Dry run, do nothing'));
-        return;
-    } 
-    fs.writeFileSync(file, JSON.stringify(data, null, 2)); 
-    console.log(pc.cyan("[*] Saved to file: " + file));
-}
+let resources = new Resouces(config);
 
 async function release(target) {
-    let input = read(config.folder_in + target);
+    let input = resources.read(config.folder_in + target);
     let items = input.mSource.mTerms.Array;
 
     let progress = progresify(items.length);
     let dictionary = new Dictonary(config);
     let csv = new CSV();
 
-    for (let i = 0, lines = 0; i < items.length; i++) {
+    for (let i = 0; i < items.length; i++) {
         let item = items[i];
         let id = item.Term;
         let text = item.Languages.Array[0];
@@ -63,7 +53,7 @@ async function release(target) {
         console.log("<<", pc.green(translation));
     }
 
-    write(config.folder_out + target, input);
+    resources.write(config.folder_out + target, input);
     dictionary.save();
     config.csv && csv.save('./resources/Sheets/' + target);
 

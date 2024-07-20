@@ -16,6 +16,7 @@
     "picocolors": "^1.0.1"
   },
   "devDependencies": {
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "lossless-json": "^4.0.1"
   }
 }

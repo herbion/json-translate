@@ -140509,7 +140509,7 @@
     "GoogleUpdateFrequency": 1,
     "GoogleInEditorCheckFrequency": 1,
     "GoogleUpdateSynchronization": 2,
-    "GoogleUpdateDelay": 0.0,
+    "GoogleUpdateDelay": 0,
     "Assets": {
       "Array": []
     }
