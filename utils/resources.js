@@ -4,7 +4,7 @@ import { parse, stringify } from 'lossless-json'
 
 const crlf = '\r\n';
 
-class Resouces {
+class Resources {
     constructor(config) {
         this.config = config;
     }
@@ -24,4 +24,4 @@ class Resouces {
 
 }
 
-export default Resouces;
+export default Resources;

@@ -1,9 +1,8 @@
 import dotenv from 'dotenv';
 import pc from "picocolors";
-import fs from 'fs';
 import Dictonary from './utils/dict.js';
 import CSV from './utils/csv.js';
-import Resouces from './utils/resources.js';
+import Resources from './utils/resources.js';
 import progresify from './utils/progress.js';
 import minimist from 'minimist'
 
@@ -20,7 +19,7 @@ const config = {
     folder_out: './resources/Release/',
 };
 // * utils
-let resources = new Resouces(config);
+let resources = new Resources(config);
 
 async function release(target) {
     let input = resources.read(config.folder_in + target);
