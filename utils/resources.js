@@ -8,9 +8,10 @@ class Resources {
     constructor(config) {
         this.config = config;
     }
-    read(file) {
+    read(file, type = "json") {
         console.log(pc.cyan("[*] Reading file: " + file));
-        return parse(fs.readFileSync(file, 'utf8'))
+        let raw = fs.readFileSync(file, 'utf8');
+        return type === "json" ? parse(raw) : raw;
     };
     write(file, data) {
         if (this.config.dry) {

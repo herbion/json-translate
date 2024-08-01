@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import pc from "picocolors";
 import Dictonary from './utils/dict.js';
 import CSV from './utils/csv.js';
+import PO from './utils/po.js';
 import Resources from './utils/resources.js';
 import progresify from './utils/progress.js';
 import minimist from 'minimist'
@@ -17,6 +18,7 @@ const config = {
     dictionary: argv.dictionary || false,
     folder_in: './resources/Staging/',
     folder_out: './resources/Release/',
+    l10n: './resources/L10N/dialogues.po',
 };
 // * utils
 let resources = new Resources(config);
@@ -28,11 +30,14 @@ async function release(target) {
     let progress = progresify(items.length);
     let dictionary = new Dictonary(config);
     let csv = new CSV();
+    let po = new PO();
+
+    let l10n = po.read(config.l10n);
 
     for (let i = 0; i < items.length; i++) {
         let item = items[i];
         let id = item.Term;
-        let text = item.Languages.Array[0];
+        let text = l10n[id] || item.Languages.Array[0];
 
         console.log();
         progress();
